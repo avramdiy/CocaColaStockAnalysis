@@ -84,17 +84,20 @@ def plot_chart():
         # Filter for dates in 1962
         df = df[(df['date'] >= '1962-01-01') & (df['date'] <= '1962-12-31')]
 
-        # Group by month and calculate the average "open" and "close"
+        # Group by month and calculate the average values
         df['month'] = df['date'].dt.to_period('M')
         monthly_avg = df.groupby('month').mean()
 
-        # Plot the averages
-        plt.figure(figsize=(10, 6))
+        # Plot the averages for open, close, high, and low
+        plt.figure(figsize=(12, 8))
         plt.plot(monthly_avg.index.astype(str), monthly_avg['open'], label='Average Open', marker='o')
         plt.plot(monthly_avg.index.astype(str), monthly_avg['close'], label='Average Close', marker='o')
+        plt.plot(monthly_avg.index.astype(str), monthly_avg['high'], label='Average High', marker='s', linestyle='--')
+        plt.plot(monthly_avg.index.astype(str), monthly_avg['low'], label='Average Low', marker='s', linestyle='--')
+
         plt.xlabel('Month')
         plt.ylabel('Price')
-        plt.title('Average Monthly Open & Close Prices (1962)')
+        plt.title('Average Monthly Prices (1962)')
         plt.legend()
         plt.grid(True)
 
@@ -107,6 +110,7 @@ def plot_chart():
         return send_file(img, mimetype='image/png')
     except Exception as e:
         return f"Error generating plot: {str(e)}"
+
 
 if __name__ == '__main__':
     app.run(debug=True)

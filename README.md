@@ -20,4 +20,6 @@
 
  ### 4th Commit
 
+ - Plot the average monthly "high" & "low" separately on the same line chart from before.
+
  ### 5th Commit
