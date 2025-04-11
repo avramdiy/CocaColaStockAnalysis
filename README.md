@@ -23,3 +23,5 @@
  - Plot the average monthly "high" & "low" separately on the same line chart from before.
 
  ### 5th Commit
+
+ - Plot a monthly average bar chart for the volume, using an le6 scale.

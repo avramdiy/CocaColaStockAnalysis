@@ -88,18 +88,27 @@ def plot_chart():
         df['month'] = df['date'].dt.to_period('M')
         monthly_avg = df.groupby('month').mean()
 
-        # Plot the averages for open, close, high, and low
-        plt.figure(figsize=(12, 8))
-        plt.plot(monthly_avg.index.astype(str), monthly_avg['open'], label='Average Open', marker='o')
-        plt.plot(monthly_avg.index.astype(str), monthly_avg['close'], label='Average Close', marker='o')
-        plt.plot(monthly_avg.index.astype(str), monthly_avg['high'], label='Average High', marker='s', linestyle='--')
-        plt.plot(monthly_avg.index.astype(str), monthly_avg['low'], label='Average Low', marker='s', linestyle='--')
+        # Plot the averages for open, close, high, low, and volume
+        fig, ax1 = plt.subplots(figsize=(12, 8))
 
-        plt.xlabel('Month')
-        plt.ylabel('Price')
-        plt.title('Average Monthly Prices (1962)')
-        plt.legend()
-        plt.grid(True)
+        # Line chart for prices
+        ax1.plot(monthly_avg.index.astype(str), monthly_avg['open'], label='Average Open', marker='o')
+        ax1.plot(monthly_avg.index.astype(str), monthly_avg['close'], label='Average Close', marker='o')
+        ax1.plot(monthly_avg.index.astype(str), monthly_avg['high'], label='Average High', marker='s', linestyle='--')
+        ax1.plot(monthly_avg.index.astype(str), monthly_avg['low'], label='Average Low', marker='s', linestyle='--')
+
+        ax1.set_xlabel('Month')
+        ax1.set_ylabel('Price')
+        ax1.set_title('Average Monthly Prices & Volume (1962)')
+        ax1.legend()
+        ax1.grid(True)
+
+        # Bar chart for volume
+        ax2 = ax1.twinx()  # Create a secondary y-axis
+        ax2.bar(monthly_avg.index.astype(str), monthly_avg['volume'], color='grey', alpha=0.5, label='Average Volume (log scale)')
+        ax2.set_yscale('log')
+        ax2.set_ylabel('Volume (log scale)')
+        ax2.legend(loc='upper right')
 
         # Save the plot to a BytesIO object
         img = io.BytesIO()
@@ -110,6 +119,7 @@ def plot_chart():
         return send_file(img, mimetype='image/png')
     except Exception as e:
         return f"Error generating plot: {str(e)}"
+
 
 
 if __name__ == '__main__':
