@@ -46,6 +46,22 @@ def display_csv():
         # Load CSV file into a DataFrame
         df = pd.read_csv(CSV_FILE_PATH)
 
+        # Ensure the 'date' column is in datetime format with UTC
+        if 'date' in df.columns:
+            df['date'] = pd.to_datetime(df['date'], utc=True)
+
+            # Define the start and end dates in UTC
+            start_date = pd.Timestamp('1962-01-01', tz='UTC')
+            end_date = pd.Timestamp('1962-12-31', tz='UTC')
+
+            # Filter for dates between January 1, 1962, and December 31, 1962
+            df = df[(df['date'] >= start_date) & (df['date'] <= end_date)]
+
+        if 'close' in df.columns:
+            df.drop(columns=['close'], inplace=True)
+        if 'adj_close' in df.columns:
+            df.rename(columns={'adj_close': 'close'}, inplace=True)
+
         # Convert DataFrame to HTML table
         table_html = df.to_html(index=False, classes='dataframe', border=0)
 

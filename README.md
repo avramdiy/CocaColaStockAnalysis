@@ -10,6 +10,10 @@
 
  ### 2nd Commit
 
+ - Drop the "close" column and rename the "adj_close" column to "close"
+
+ - Filter dates to show 1/1/1962 to 12/31/1962.
+
  ### 3rd Commit
 
  ### 4th Commit
