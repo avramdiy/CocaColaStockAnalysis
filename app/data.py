@@ -1,5 +1,7 @@
-from flask import Flask, render_template_string
+from flask import Flask, render_template_string, send_file
 import pandas as pd
+import matplotlib.pyplot as plt
+import io
 
 app = Flask(__name__)
 
@@ -69,6 +71,42 @@ def display_csv():
         return render_template_string(HTML, table=table_html)
     except Exception as e:
         return f"Error loading CSV file: {str(e)}"
+    
+@app.route('/plot')
+def plot_chart():
+    try:
+        # Load CSV file into DataFrame
+        df = pd.read_csv(CSV_FILE_PATH)
+
+        # Ensure the 'date' column is in datetime format with UTC
+        df['date'] = pd.to_datetime(df['date'], utc=True)
+
+        # Filter for dates in 1962
+        df = df[(df['date'] >= '1962-01-01') & (df['date'] <= '1962-12-31')]
+
+        # Group by month and calculate the average "open" and "close"
+        df['month'] = df['date'].dt.to_period('M')
+        monthly_avg = df.groupby('month').mean()
+
+        # Plot the averages
+        plt.figure(figsize=(10, 6))
+        plt.plot(monthly_avg.index.astype(str), monthly_avg['open'], label='Average Open', marker='o')
+        plt.plot(monthly_avg.index.astype(str), monthly_avg['close'], label='Average Close', marker='o')
+        plt.xlabel('Month')
+        plt.ylabel('Price')
+        plt.title('Average Monthly Open & Close Prices (1962)')
+        plt.legend()
+        plt.grid(True)
+
+        # Save the plot to a BytesIO object
+        img = io.BytesIO()
+        plt.savefig(img, format='png')
+        img.seek(0)
+        plt.close()
+
+        return send_file(img, mimetype='image/png')
+    except Exception as e:
+        return f"Error generating plot: {str(e)}"
 
 if __name__ == '__main__':
     app.run(debug=True)

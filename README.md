@@ -16,6 +16,8 @@
 
  ### 3rd Commit
 
+ - Plot the average monthly "open" & "close" separately on the same line chart.
+
  ### 4th Commit
 
  ### 5th Commit
